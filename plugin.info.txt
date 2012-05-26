@@ -1,0 +1,8 @@
+# General Plugin Info do not edit
+base   openbadge
+author Martyn Eggleton
+email  martyn@access-space.org
+date   2012-05-26
+name   Open Badges Plugin
+desc   Collect earnt OBI compliant OpenBadges and transfer them to a users Backpack. (Eventually will allow earinng too)
+url    http://www.dokuwiki.org/plugin:openbadge
