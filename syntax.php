@@ -207,20 +207,21 @@ class syntax_plugin_openbadge extends DokuWiki_Syntax_Plugin {
           $sUserEmail = $_REQUEST['recipient_email'];
           
           //if earning
-          if($sUserEmail)
+          if($sUserEmail && in_array($sUserEmail, $data['emails']))
           {
             $renderer->doc .= '<div class="openbadge_holder">
             <img src="'.$data['image'].'" alt="'.$data['name'].'" width="150" height="150" />
             </div>';
             
             $renderer->doc .= '<div class="openbadge_result">';
-            $renderer->doc .= '</div>';
+            $renderer->doc .= 'Connecting to to the Open Badge Backback</div>';
             
             //exportlink($id='',$format='raw',$more='',$abs=false,$sep='&amp;')
             $instance = md5($data['name'].$sUserEmail);
             //OpenBadges.issue(assertions, callback)
             $sAssertion = exportlink($ID, "openbadge","b=".$instance, true);
             $renderer->doc .= '<script src="http://beta.openbadges.org/issuer.js"></script>';
+            
             /*
             msg('Assertion is <a href="'.$sAssertion.'">here</a>. But the system should work automatically', 0);
             */
@@ -230,6 +231,12 @@ class syntax_plugin_openbadge extends DokuWiki_Syntax_Plugin {
           }
           else
           {
+            if($sUserEmail)
+            {
+              msg("openbadge plugin: That email isn't on the list of badge recipients, please try again.",-1);
+            
+            }
+            
              $renderer->doc .= '<div class="openbadge_text">';
              $renderer->doc .= '<p>Those who completed this '.$data['eventtype'].' may have earned the 
              <strong>"'.$data['name'].'"</strong> <a href="http://openbadges.org">Open Badge</A>.
