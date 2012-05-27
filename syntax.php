@@ -150,7 +150,8 @@ class syntax_plugin_openbadge extends DokuWiki_Syntax_Plugin {
         {
           //badge is being earnt by being here
           //and if think that can only be a logged in thing?
-           msg("openbadge plugin: Badge must have been 'issued_on' a date to 'recipents' or 'earnt' by getting to this page",-1);
+           msg($this->getLang('no_issued_on_earnt'),-1);
+           
            $iErrors ++;    
            
           //should we add a javascript hook for a on page task being completed?
@@ -162,7 +163,7 @@ class syntax_plugin_openbadge extends DokuWiki_Syntax_Plugin {
         {
           if(!isset($data[$sRequired]) || empty($data[$sRequired]))
           {
-            msg("openbadge plugin: Required field '$sRequired' missing or empty",-1);
+            msg(sprintf($this->getLang('required_missing'),$sRequired),-1);
             $iErrors ++;    
             
           }
@@ -214,17 +215,13 @@ class syntax_plugin_openbadge extends DokuWiki_Syntax_Plugin {
             </div>';
             
             $renderer->doc .= '<div class="openbadge_result">';
-            $renderer->doc .= 'Connecting to to the Open Badge Backback</div>';
+            $renderer->doc .= $this->getLang('connecting').'</div>';
             
             //exportlink($id='',$format='raw',$more='',$abs=false,$sep='&amp;')
             $instance = md5($data['name'].$sUserEmail);
             //OpenBadges.issue(assertions, callback)
             $sAssertion = exportlink($ID, "openbadge","b=".$instance, true);
             $renderer->doc .= '<script src="http://beta.openbadges.org/issuer.js"></script>';
-            
-            /*
-            msg('Assertion is <a href="'.$sAssertion.'">here</a>. But the system should work automatically', 0);
-            */
             
             $renderer->doc .= '<input id="openbadgeassertion" type="hidden" value="'.$sAssertion.'" />';
            
@@ -233,15 +230,15 @@ class syntax_plugin_openbadge extends DokuWiki_Syntax_Plugin {
           {
             if($sUserEmail)
             {
-              msg("openbadge plugin: That email isn't on the list of badge recipients, please try again.",-1);
+              msg($this->getLang('emailmissing'),-1);
             
             }
             
-             $renderer->doc .= '<div class="openbadge_text">';
-             $renderer->doc .= '<p>Those who completed this '.$data['eventtype'].' may have earned the 
-             <strong>"'.$data['name'].'"</strong> <a href="http://openbadges.org">Open Badge</A>.
-             Use the form to collect your badge and add it to your free
-             <a href="http://beta.openbadges.org">Open Badge Backpack</a></div>';
+             $renderer->doc .= '<div class="openbadge_text"><p>';
+             $renderer->doc .= sprintf($this->getLang('invite'),$data['eventtype'], $data['name'] ).'</p></div>';
+             
+            
+             
              
              $renderer->doc .= '<div class="openbadge_holder">
              <img src="'.$data['image'].'" alt="'.$data['name'].'" width="150" height="150" />
@@ -249,8 +246,8 @@ class syntax_plugin_openbadge extends DokuWiki_Syntax_Plugin {
              
              $renderer->doc .= '<div class="openbadge_form"><form method="POST"><p><span class="openbadge_name">'.
              '</span><br/>
-             Your Email Adress <input name="recipient_email" /><br/>
-             <input type="submit" value="Claim My Badge" />
+             '.$this->getLang('email_prompt').' <input name="recipient_email" /><br/>
+             <input type="submit" value="'.$this->getLang('claim').'" />
              </p></form></div>';
              
              

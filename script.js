@@ -10,11 +10,12 @@ function sendAssertion()
         var output;
         if(errors.length > 0)
         {
-           output = "Badge Issueing Failed, Sorry";
+           output = LANG.plugins.openbadge.issue_fail;
+           console.log("LANG =", LANG);
         }
         if(successes.length > 0)
         {
-          output = "Badge Issued Succesfully";
+          output = LANG.plugins.openbadge.issue_success;
         }
         jQuery(".openbadge_result").html(output);
     });
