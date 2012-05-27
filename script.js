@@ -7,8 +7,16 @@ function sendAssertion()
   {
     OpenBadges.issue([assertionURL],
       function(errors, successes) {
-      console.log(errors);
-      console.log(successes);
+        var output;
+        if(errors.length > 0)
+        {
+           output = "Badge Issueing Failed, Sorry";
+        }
+        if(successes.length > 0)
+        {
+          output = "Badge Issued Succesfully";
+        }
+        jQuery(".openbadge_result").html(output);
     });
   }
 }

@@ -210,19 +210,23 @@ class syntax_plugin_openbadge extends DokuWiki_Syntax_Plugin {
           if($sUserEmail)
           {
             $renderer->doc .= '<div class="openbadge_holder">
-             <img src="'.$data['image'].'" alt="'.$data['name'].'" width="150" height="150" />
-             </div>';
-             //exportlink($id='',$format='raw',$more='',$abs=false,$sep='&amp;')
-             $instance = md5($data['name'].$sUserEmail);
+            <img src="'.$data['image'].'" alt="'.$data['name'].'" width="150" height="150" />
+            </div>';
+            
+            $renderer->doc .= '<div class="openbadge_result">';
+            $renderer->doc .= '</div>';
+            
+            //exportlink($id='',$format='raw',$more='',$abs=false,$sep='&amp;')
+            $instance = md5($data['name'].$sUserEmail);
             //OpenBadges.issue(assertions, callback)
             $sAssertion = exportlink($ID, "openbadge","b=".$instance, true);
             $renderer->doc .= '<script src="http://beta.openbadges.org/issuer.js"></script>';
-            
+            /*
             msg('Assertion is <a href="'.$sAssertion.'">here</a>. But the system should work automatically', 0);
-           
+            */
             
             $renderer->doc .= '<input id="openbadgeassertion" type="hidden" value="'.$sAssertion.'" />';
-            $renderer->doc .= '</div>';
+           
           }
           else
           {
