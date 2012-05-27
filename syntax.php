@@ -205,10 +205,14 @@ class syntax_plugin_openbadge extends DokuWiki_Syntax_Plugin {
         {
           $renderer->doc .= '<div class="openbadge">';
                
-          $sUserEmail = $_REQUEST['recipient_email'];
+          $sUserEmail = false;
+          if(isset($_POST['recipient_email']))
+          {
+            $sUserEmail = $_POST['recipient_email'];
+          }
           
           //if earning
-          if($sUserEmail && in_array($sUserEmail, $data['emails']))
+          if($sUserEmail !== false && in_array($sUserEmail, $data['emails']))
           {
             $renderer->doc .= '<div class="openbadge_holder">
             <img src="'.$data['image'].'" alt="'.$data['name'].'" width="150" height="150" />
@@ -228,7 +232,7 @@ class syntax_plugin_openbadge extends DokuWiki_Syntax_Plugin {
           }
           else
           {
-            if($sUserEmail)
+            if($sUserEmail !== false)
             {
               msg($this->getLang('emailmissing'),-1);
             
@@ -244,7 +248,7 @@ class syntax_plugin_openbadge extends DokuWiki_Syntax_Plugin {
              <img src="'.$data['image'].'" alt="'.$data['name'].'" width="150" height="150" />
              </div>';
              
-             $renderer->doc .= '<div class="openbadge_form"><form method="POST"><p><span class="openbadge_name">'.
+             $renderer->doc .= '<div class="openbadge_form"><form method="post" ><input type="hidden" name="cb" value="'.time().'" /><p><span class="openbadge_name">'.
              '</span><br/>
              '.$this->getLang('email_prompt').' <input name="recipient_email" /><br/>
              <input type="submit" value="'.$this->getLang('claim').'" />
