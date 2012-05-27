@@ -64,7 +64,7 @@ class syntax_plugin_openbadge extends DokuWiki_Syntax_Plugin {
         
         
         $data["salt"] = "somethingclever";
-        $aOrigin = parse_url(getBaseURL());
+        $aOrigin = parse_url(getBaseURL(true));
         $data["origin"] = $aOrigin['scheme']."://".$aOrigin['host'];
         $data['issuer_name'] = $conf['title'];
         $data['contact'] = $conf['contact'];
@@ -153,8 +153,7 @@ class syntax_plugin_openbadge extends DokuWiki_Syntax_Plugin {
            msg("openbadge plugin: Badge must have been 'issued_on' a date to 'recipents' or 'earnt' by getting to this page",-1);
            $iErrors ++;    
            
-          //chuck an error cos it has to have been issued to someone or being earnt by being here
-          //should we had a javascript hook for a on page task being completed?
+          //should we add a javascript hook for a on page task being completed?
         }
         
         $aRequired = array("name", "salt", "image", "description","criteria",
@@ -210,7 +209,6 @@ class syntax_plugin_openbadge extends DokuWiki_Syntax_Plugin {
           //if earning
           if($sUserEmail)
           {
-            $renderer->doc .= '<script src="http://beta.openbadges.org/issuer.js"></script>';
             $renderer->doc .= '<div class="openbadge_holder">
              <img src="'.$data['image'].'" alt="'.$data['name'].'" width="150" height="150" />
              </div>';
@@ -218,10 +216,12 @@ class syntax_plugin_openbadge extends DokuWiki_Syntax_Plugin {
              $instance = md5($data['name'].$sUserEmail);
             //OpenBadges.issue(assertions, callback)
             $sAssertion = exportlink($ID, "openbadge","b=".$instance, true);
+            $renderer->doc .= '<script src="http://beta.openbadges.org/issuer.js"></script>';
             
-            $renderer->doc .= '<script type="text/javascript">
-            jQuery(document).ready(OpenBadges.issue(["'.$sAssertion.'"],function(errors, successes) { console.log(errors);console.log(successes); });
-            </script>';
+            msg('Assertion is <a href="'.$sAssertion.'">here</a>. But the system should work automatically', 0);
+           
+            
+            $renderer->doc .= '<input id="openbadgeassertion" type="hidden" value="'.$sAssertion.'" />';
             $renderer->doc .= '</div>';
           }
           else
@@ -229,7 +229,7 @@ class syntax_plugin_openbadge extends DokuWiki_Syntax_Plugin {
              $renderer->doc .= '<div class="openbadge_text">';
              $renderer->doc .= '<p>Those who completed this '.$data['eventtype'].' may have earned the 
              <strong>"'.$data['name'].'"</strong> <a href="http://openbadges.org">Open Badge</A>.
-             Use the form below to collect your badge and add it to your free
+             Use the form to collect your badge and add it to your free
              <a href="http://beta.openbadges.org">Open Badge Backpack</a></div>';
              
              $renderer->doc .= '<div class="openbadge_holder">
@@ -245,7 +245,7 @@ class syntax_plugin_openbadge extends DokuWiki_Syntax_Plugin {
              
           }
           $renderer->doc .= '</div>';
-             
+          $renderer->doc .= '<div class="clearer"></div>';     
           return true;
         }
         
