@@ -17,6 +17,8 @@ require_once(DOKU_PLUGIN.'syntax.php');
  */
 class syntax_plugin_openbadge extends DokuWiki_Syntax_Plugin {
 
+    var $form_id = 0;
+    
     /**
      * What kind of syntax are we?
      */
@@ -206,9 +208,12 @@ class syntax_plugin_openbadge extends DokuWiki_Syntax_Plugin {
           $renderer->doc .= '<div class="openbadge">';
                
           $sUserEmail = false;
-          if(isset($_POST['recipient_email']))
+          
+          $this->form_id++;
+          if (isset($_POST['openbadge']) && checkSecurityToken() &&
+            $_POST['openbadge']['$$id'] == $this->form_id)
           {
-            $sUserEmail = $_POST['recipient_email'];
+            $sUserEmail = $_POST['openbadge']['recipient_email'];
           }
           
           //if earning
@@ -248,12 +253,24 @@ class syntax_plugin_openbadge extends DokuWiki_Syntax_Plugin {
              <img src="'.$data['image'].'" alt="'.$data['name'].'" width="150" height="150" />
              </div>';
              
-             $renderer->doc .= '<div class="openbadge_form"><form method="post" ><input type="hidden" name="cb" value="'.time().'" /><p><span class="openbadge_name">'.
-             '</span><br/>
-             '.$this->getLang('email_prompt').' <input name="recipient_email" /><br/>
-             <input type="submit" value="'.$this->getLang('claim').'" />
-             </p></form></div>';
+             $renderer->doc .= '<div class="openbadge_form">';
              
+            $this->form_id = 1;
+            $form = new Doku_Form(array('class' => 'openbadge__plugin',
+                                        'id'    => 'openbadge__plugin' . $this->form_id));
+            
+            $form->addHidden('openbadge[$$id]', $this->form_id);
+            
+            $elem = form_makeField('text', 'openbadge[recipient_email]', '', $this->getLang('email_prompt'));
+            $form->addElement($elem);
+            
+            $elem = form_makeField('submit', null, $this->getLang('claim'));
+            $form->addElement($elem);
+            
+            
+            $renderer->doc .= $form->getForm();            
+            
+            $renderer->doc .= '</div>';
              
           }
           $renderer->doc .= '</div>';
@@ -299,6 +316,7 @@ class syntax_plugin_openbadge extends DokuWiki_Syntax_Plugin {
           return true;
         }
     }
+    
 }
 
 //Setup VIM: ex: et ts=4 enc=utf-8 :
